@@ -11,16 +11,16 @@ class table_toolkits():
 
     def db_loader(self, target_db):
         if target_db == 'flights':
-            file_path = "{}/data/external_corpus/flights/Combined_Flights_2022.csv".format(self.path)
+            file_path = "{}/external_corpus/flights/Combined_Flights_2022.csv".format(self.path)
             self.data = pd.read_csv(file_path)
         elif target_db == 'coffee':
-            file_path = "{}/data/external_corpus/coffee/coffee_price.csv".format(self.path)
+            file_path = "{}/external_corpus/coffee/coffee_price.csv".format(self.path)
             self.data = pd.read_csv(file_path)
         elif target_db =='airbnb':
-            file_path = "{}/data/external_corpus/airbnb/Airbnb_Open_Data.csv".format(self.path)
+            file_path = "{}/external_corpus/airbnb/Airbnb_Open_Data.csv".format(self.path)
             self.data = pd.read_csv(file_path)
         elif target_db == 'yelp':
-            data_file = open("{}/data/external_corpus/yelp/yelp_academic_dataset_business.json".format(self.path))
+            data_file = open("{}/external_corpus/yelp/yelp_academic_dataset_business.json".format(self.path))
             data = []
             for line in data_file:
                 data.append(json.loads(line))
@@ -94,7 +94,7 @@ class table_toolkits():
             return ', '.join(self.data[column].tolist())
 
 if __name__ == "__main__":
-    db = table_toolkits("<YOUR_OWN_PATH>")
+    db = table_toolkits(".")
     print(db.db_loader('flights'))
     print(db.data_filter('IATA_Code_Marketing_Airline=AA, Flight_Number_Marketing_Airline=5647, Origin=BUF, Dest=PHL, FlightDate=2022-04-20'))
     print(db.get_value('DepTime'))

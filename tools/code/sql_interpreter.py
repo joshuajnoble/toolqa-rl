@@ -16,7 +16,7 @@ def execute(db_path, sql_cmd):
     return rows_string
 
 if __name__ == "__main__":
-    db_path = "/Users/joshua.noble/projects/ToolQA/data/external_sql_lite/yelp.sqlite"
+    db_path = "./external_sql_lite/yelp.sqlite"
     sql_cmd = "SELECT latitude, longitude FROM yelp_data WHERE address='6830 Rising Sun Ave'"
     rows = execute(db_path, sql_cmd)
     print(rows)
