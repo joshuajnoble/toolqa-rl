@@ -59,7 +59,7 @@ def insert_to_db(texts, model_name, cuda_idx, db):
     print(f"Thread {cuda_idx} Completed. Total time took for thread: {time.time() - start_time}.")
 
 
-@tool
+@tool("scirex_query_llm")
 def query_llm(query: str, is_local: bool = True, start=None, end=None) -> str:
     """Query the scirex retriever using embedding similarity search.
     

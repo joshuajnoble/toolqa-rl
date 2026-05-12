@@ -15,7 +15,7 @@ class graph_toolkits():
         self.author2id_dict = None
         self.path = path
     
-    @tool
+    @tool("graph_load_graph")
     def load_graph(self, graph_name: str) -> str:
         """
         
@@ -43,9 +43,16 @@ class graph_toolkits():
                 self.id2author_dict = pickle.load(f)
             return "DBLP data is loaded, including two graphs: AuthorNet and PaperNet."
 
-    @tool
+    @tool("graph_check_neighbours")
     def check_neighbours(self, argument: str) -> str:
-        """Check neighbors for a node in a graph. Argument: 'GraphName, NodeName'"""
+        """
+        
+        Check neighbors for a node in a graph. 
+        
+        Args: 
+            This is the argument to the graph which should be structured like 'GraphName, NodeName'
+            
+        """
         graph, node = argument.split(', ')
         if graph == 'PaperNet':
             graph = self.paper_net
@@ -74,9 +81,16 @@ class graph_toolkits():
             inv_dict = self.id2author_dict
         return str(graph.nodes[dictionary[node]])
 
-    @tool
+    @tool("graph_check_edges")
     def check_edges(self, argument: str) -> str:
-        """Check edge attributes. Argument: 'GraphName, Node1, Node2'"""
+        """
+        
+        Check edge attributes 
+        
+        Args: 
+            This is the argument to the graph which should be structured like 'GraphName, Node1, Node2'
+            
+        """
         graph, node1, node2 = argument.split(', ')
         if graph == 'PaperNet':
             graph = self.paper_net

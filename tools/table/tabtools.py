@@ -6,11 +6,11 @@ import re
 
 class table_toolkits():
     # init
-    def __init__(self, path):
+    def __init__(self):
         self.data = None
-        self.path = path
+        self.path = "./"
 
-    @tool
+    @tool("table_db_loader")
     def db_loader(self, target_db: str) -> str:
         """Load a table database and return column info.
         
@@ -39,7 +39,7 @@ class table_toolkits():
         column_names = ', '.join(self.data.columns.tolist())
         return "We have successfully loaded the {} database, including the following columns: {}.".format(target_db, column_names)
 
-    @tool
+    @tool("table_data_filter")
     def data_filter(self, argument: str) -> str:
         """
         
@@ -99,7 +99,7 @@ class table_toolkits():
             return_answer = '\n'.join(return_answer)
             return return_answer
 
-    @tool
+    @tool("table_get_value")
     def get_value(self, argument: str) -> str:
         """Get a column value from the filtered data."""
         column = argument
