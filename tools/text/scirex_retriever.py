@@ -7,6 +7,7 @@ from concurrent.futures import ProcessPoolExecutor
 import sentence_transformers
 import chromadb
 from chromadb.config import Settings
+from langchain_core.tools import tool
 
 EMBED_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 CHROMA_PERSIST_DIRECTORY = "chroma_db/scirex-v2"
@@ -58,8 +59,9 @@ def insert_to_db(texts, model_name, cuda_idx, db):
     print(f"Thread {cuda_idx} Completed. Total time took for thread: {time.time() - start_time}.")
 
 
-# Multi-processing
-def query_llm(cuda_idxes, query, is_local=True, start=None, end=None):
+@tool
+def query_llm(cuda_idxes: list, query: str, is_local: bool = True, start=None, end=None) -> str:
+    """Query the scirex retriever using embedding similarity search."""
     number_of_processes = len(cuda_idxes)
     input_texts = []
     db = create_chroma_db_local(CHROMA_PERSIST_DIRECTORY, CHROMA_COLLECTION_NAME)
@@ -67,15 +69,10 @@ def query_llm(cuda_idxes, query, is_local=True, start=None, end=None):
         for item in jsonlines.Reader(f):
             input_texts.append(item["content"])
     print("Total Number of papers:", len(input_texts))
-    # input_texts = np.array_split(input_texts, number_of_processes)
-
     args = ((input_texts[i], EMBED_MODEL_NAME, cuda_idxes[i], is_local) for i in range(number_of_processes))
-
-    # if there is no file under the directory "/localscratch/yzhuang43/ra-llm/retrieval_benchmark/data/chroma_db/agenda", insert the data into the db
     if(db.count() == 0):
         print("No data in the db, inserting data...")
         insert_to_db(input_texts, model_name=EMBED_MODEL_NAME, cuda_idx=0, db=db)
-
     input_paths = np.array_split(input_texts, number_of_processes)
     with ProcessPoolExecutor(number_of_processes) as executor:
         executor.map(insert_to_db, args)
@@ -83,7 +80,6 @@ def query_llm(cuda_idxes, query, is_local=True, start=None, end=None):
     query_embedding = sentence_embedding(model, query).tolist()
     results = db.query(query_embeddings=query_embedding, n_results=3)
     retrieval_content = [result for result in results['documents'][0]]
-    # print(retrieval_content)
     retrieval_content = '\n'.join(retrieval_content)
     return retrieval_content
 

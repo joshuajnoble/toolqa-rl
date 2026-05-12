@@ -1,6 +1,16 @@
 import sqlite3
+from langchain.tools import tool
 
-def execute(db_path, sql_cmd):
+@tool("execute_sql_query", return_direct=True)
+def execute(db_path: str, sql_cmd: str) -> str:
+    """
+    Executes a SQL command on the specified SQLite database and returns the results as a formatted string.
+    Args:
+        db_path (str): Path to the SQLite database file.
+        sql_cmd (str): SQL command to execute.
+    Returns:
+        str: Query results formatted as a string.
+    """
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute(sql_cmd)

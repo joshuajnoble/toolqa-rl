@@ -1,3 +1,4 @@
+from langchain_core.tools import tool
 import pandas as pd
 import jsonlines
 import json
@@ -9,7 +10,9 @@ class table_toolkits():
         self.data = None
         self.path = path
 
-    def db_loader(self, target_db):
+    @tool
+    def db_loader(self, target_db: str) -> str:
+        """Load a table database and return column info."""
         if target_db == 'flights':
             file_path = "{}/external_corpus/flights/Combined_Flights_2022.csv".format(self.path)
             self.data = pd.read_csv(file_path)
@@ -30,17 +33,13 @@ class table_toolkits():
         column_names = ', '.join(self.data.columns.tolist())
         return "We have successfully loaded the {} database, including the following columns: {}.".format(target_db, column_names)
 
-    # def get_column_names(self, target_db):
-    #     return ', '.join(self.data.columns.tolist())
-
-    def data_filter(self, argument):
-        # commands = re.sub(r' ', '', argument)
+    @tool
+    def data_filter(self, argument: str) -> str:
+        """Filter data in a loaded table database."""
         backup_data = self.data
         commands = argument.split(', ')
-        
         for i in range(len(commands)):
             try:
-                # commands[i] = commands[i].replace(' ', '')
                 if '>=' in commands[i]:
                     command = commands[i].split('>=')
                     column_name = command[0]
@@ -75,7 +74,6 @@ class table_toolkits():
         if len(self.data) > 0:
             return "We have successfully filtered the data ({} rows).".format(current_length)
         else:
-            # convert to strings, with comma as column separator and '\n' as row separator
             return_answer = []
             for i in range(len(self.data)):
                 outputs = []
@@ -86,7 +84,9 @@ class table_toolkits():
             return_answer = '\n'.join(return_answer)
             return return_answer
 
-    def get_value(self, argument):
+    @tool
+    def get_value(self, argument: str) -> str:
+        """Get a column value from the filtered data."""
         column = argument
         if len(self.data) == 1:
             return str(self.data.iloc[0][column])

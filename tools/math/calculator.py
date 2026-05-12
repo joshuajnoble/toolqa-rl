@@ -8,10 +8,13 @@ import requests
 from operator import pow, truediv, mul, add, sub
 #import wolframalpha
 import json
+from langchain_core.tools import tool
 
 query = '1+2*3'
 
-def calculator(query: str):
+@tool
+def calculator(query: str) -> float:
+    """Evaluate a simple math expression and return the result."""
     operators = {
         '+': add,
         '-': sub,
@@ -26,7 +29,9 @@ def calculator(query: str):
         if operator in operators:
             return round(operators[operator](calculator(left), calculator(right)),2)
 
-def WolframAlphaCalculator(input_query: str):
+@tool
+def WolframAlphaCalculator(input_query: str) -> str:
+    """Query WolframAlpha for a result string."""
     wolfram_alpha_appid = "2LWY52GTWU"
 
     url = "https://api.wolframalpha.com/v2/query"

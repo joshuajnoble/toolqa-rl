@@ -1,6 +1,12 @@
-def execute(python_code):
+from langchain.tools import tool
+
+@tool("execute_python_code", return_direct=True)
+def execute(python_code:str) -> str:
     """
-    Returns the path to the python interpreter.
+    Executes Python code
+
+    Args:
+        python_code: valid python code to execute
     """
     global_var = {"ans": 0}
     exec(python_code, global_var)

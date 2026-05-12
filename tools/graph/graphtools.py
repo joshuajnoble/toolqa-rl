@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import os
+from langchain_core.tools import tool
 
 class graph_toolkits():
     # init
@@ -14,8 +15,9 @@ class graph_toolkits():
         self.author2id_dict = None
         self.path = path
     
-    def load_graph(self, graph_name):
-        # print(graph_name)
+    @tool
+    def load_graph(self, graph_name: str) -> str:
+        """Load a graph by name (e.g., 'dblp'). Returns a status string."""
         if graph_name == 'dblp':
             with open('{}/external_corpus/dblp/paper_net.pkl'.format(self.path), 'rb') as f:
                 self.paper_net = pickle.load(f)
@@ -32,8 +34,10 @@ class graph_toolkits():
             with open("{}/external_corpus/dblp/id2author_dict.pkl".format(self.path), "rb") as f:
                 self.id2author_dict = pickle.load(f)
             return "DBLP data is loaded, including two graphs: AuthorNet and PaperNet."
-    
-    def check_neighbours(self, argument):
+
+    @tool
+    def check_neighbours(self, argument: str) -> str:
+        """Check neighbors for a node in a graph. Argument: 'GraphName, NodeName'"""
         graph, node = argument.split(', ')
         if graph == 'PaperNet':
             graph = self.paper_net
@@ -48,8 +52,9 @@ class graph_toolkits():
             neighbour_list.append(inv_dict[neighbour])
         return str(neighbour_list)
 
-    # check the attributes of the nodes
-    def check_nodes(self, argument):
+    @tool
+    def check_nodes(self, argument: str) -> str:
+        """Check node attributes. Argument: 'GraphName, NodeName'"""
         graph, node = argument.split(', ')
         if graph == 'PaperNet':
             graph = self.paper_net
@@ -61,8 +66,9 @@ class graph_toolkits():
             inv_dict = self.id2author_dict
         return str(graph.nodes[dictionary[node]])
 
-    # check the attributes of the edges
-    def check_edges(self, argument):
+    @tool
+    def check_edges(self, argument: str) -> str:
+        """Check edge attributes. Argument: 'GraphName, Node1, Node2'"""
         graph, node1, node2 = argument.split(', ')
         if graph == 'PaperNet':
             graph = self.paper_net
@@ -73,7 +79,7 @@ class graph_toolkits():
         elif graph == 'AuthorNet':
             graph = self.author_net
             dictionary = self.author2id_dict
-            inv_dict = self.id2title_dict
+            inv_dict = self.id2author_dict
             edge = graph.edges[dictionary[node1], dictionary[node2]]
             for id in range(len(edge['papers'])):
                 edge['papers'][id] = inv_dict[edge['papers'][id]]
