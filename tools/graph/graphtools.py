@@ -17,7 +17,15 @@ class graph_toolkits():
     
     @tool
     def load_graph(self, graph_name: str) -> str:
-        """Load a graph by name (e.g., 'dblp'). Returns a status string."""
+        """
+        
+        Load a graph by name (e.g., 'dblp'). Returns a status string.
+        
+        Args:
+
+            graph_name: Name of the graph, options are 'dblp'
+        
+        """
         if graph_name == 'dblp':
             with open('{}/external_corpus/dblp/paper_net.pkl'.format(self.path), 'rb') as f:
                 self.paper_net = pickle.load(f)
