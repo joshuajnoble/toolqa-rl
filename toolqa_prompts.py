@@ -140,8 +140,6 @@ Here are some examples:
 {examples}
 (END OF EXAMPLES)
 
-{reflections}
-
 """
 
 REFLECTION_HEADER = 'You have attempted to answer following question before and failed. The following reflection(s) give a plan to avoid failing to answer the question in the same way you did previously. Use them to improve your strategy of correctly answering the given question.\n'
