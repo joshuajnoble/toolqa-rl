@@ -12,7 +12,13 @@ class table_toolkits():
 
     @tool
     def db_loader(self, target_db: str) -> str:
-        """Load a table database and return column info."""
+        """Load a table database and return column info.
+        
+        Args:
+
+            target_db: The database to choose from, the options are 'flights', 'coffee', 'airbnb', 'yelp'
+        
+        """
         if target_db == 'flights':
             file_path = "{}/external_corpus/flights/Combined_Flights_2022.csv".format(self.path)
             self.data = pd.read_csv(file_path)
@@ -35,7 +41,16 @@ class table_toolkits():
 
     @tool
     def data_filter(self, argument: str) -> str:
-        """Filter data in a loaded table database."""
+        """
+        
+        Filter data in a loaded table database.
+        
+        Args:
+
+            argument: This is a filter that should be applied to the data using '>=', '<=', '<', '>', '=' operators. Here is an example for flights:
+            'IATA_Code_Marketing_Airline=AA, Flight_Number_Marketing_Airline=5647, Origin=BUF, Dest=PHL, FlightDate=2022-04-20'
+
+        """
         backup_data = self.data
         commands = argument.split(', ')
         for i in range(len(commands)):

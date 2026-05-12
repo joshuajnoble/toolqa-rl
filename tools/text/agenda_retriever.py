@@ -60,16 +60,21 @@ def insert_to_db(texts, model_name, cuda_idx, db):
 
 
 @tool
-def query_llm(cuda_idxes: list, query: str, is_local: bool = True, start=None, end=None) -> str:
-    """Query the agenda retriever using embedding similarity search."""
-    number_of_processes = len(cuda_idxes)
+def query_llm(query: str, is_local: bool = True, start=None, end=None) -> str:
+    """Query the scirex retriever using embedding similarity search.
+    
+    Args:
+        query: the query that the LLM wants to find
+    
+    """
+    number_of_processes = 1
     input_texts = []
     db = create_chroma_db_local(CHROMA_PERSIST_DIRECTORY, CHROMA_COLLECTION_NAME)
     with open(FILE_PATH, 'r') as f:
         for item in jsonlines.Reader(f):
             input_texts.append(item["event"])
     print("Total Number of Agendas:", len(input_texts))
-    args = ((input_texts[i], EMBED_MODEL_NAME, cuda_idxes[i], is_local) for i in range(number_of_processes))
+    args = ((input_texts[i], EMBED_MODEL_NAME, 0, is_local) for i in range(number_of_processes))
     if(db.count() == 0):
         print("No data in the db, inserting data...")
         insert_to_db(input_texts, model_name=EMBED_MODEL_NAME, cuda_idx=0, db=db)

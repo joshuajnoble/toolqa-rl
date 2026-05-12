@@ -14,7 +14,15 @@ query = '1+2*3'
 
 @tool
 def calculator(query: str) -> float:
-    """Evaluate a simple math expression and return the result."""
+    """
+    
+    Evaluate a simple math expression and return the result.
+    
+    Args:
+
+        query: this is the operation to be calculated. The calculator accepts '+', '-', '*', '/'
+    
+    """
     operators = {
         '+': add,
         '-': sub,
@@ -31,8 +39,16 @@ def calculator(query: str) -> float:
 
 @tool
 def WolframAlphaCalculator(input_query: str) -> str:
-    """Query WolframAlpha for a result string."""
-    wolfram_alpha_appid = "2LWY52GTWU"
+    """
+    
+    Query WolframAlpha for a result string.
+    
+    Args:
+
+        input_query: this is the query to be sent to Wolfram alpha
+    
+    """
+    wolfram_alpha_appid = os.getenv("WOLFRAM_APP_KEY")
 
     url = "https://api.wolframalpha.com/v2/query"
 
