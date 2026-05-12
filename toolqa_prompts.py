@@ -107,20 +107,34 @@ Here are some examples:
 (END OF EXAMPLES)
 Question: {question}{scratchpad}"""
 
-REACT_REFLECT_INSTRUCTION = """Solve a question answering task with interleaving Thought, Action, Observation steps. Thought can reason about the current situation, and Action can be 13 types: 
-(1) Calculate[formula], which calculates the formula and returns the result.
-(2) RetrieveAgenda[keyword], which retrieves the agenda containing keyword and returns the agenda.
-(3) RetrieveScirex[keyword], which retrieves the most relevant paragraphs in machine learning-related papers to keyword and returns the paragraphs.
-(4) LoadDB[DBName], which loads the database DBName and returns the database. The DBName can be one of the following: flights/coffee/airbnb/yelp.
-(5) FilterDB[condition], which filters the database DBName by the column column_name the relation (e.g., =, >, etc.) and the value value, and returns the filtered database.
-(6) GetValue[column_name], which returns the value of the column column_name in the database DBName.
-(7) LoadGraph[GraphName], which loads the graph GraphName and returns the graph. The GraphName can be one of the following: PaperNet/AuthorNet.
-(8) NeighbourCheck[GraphName, Node], which lists the neighbours of the node Node in the graph GraphName and returns the neighbours. 
-(9) NodeCheck[GraphName, Node], which returns the detailed attribute information of Node. 
-(10) EdgeCheck[GraphName, Node1, Node2], which returns the detailed attribute information of the edge between Node1 and Node2. 
-(11) SQLInterpreter[SQL], which interprets the SQL query SQL and returns the result.
-(12) PythonInterpreter[Python], which interprets the Python code Python and returns the result.
-(13) Finish[answer], which returns the answer and finishes the task.
+REACT_REFLECT_INSTRUCTION = """Solve a question answering task with interleaving Thought, Action, Observation steps. Thought can reason about the current situation, and Action can be one of the following tools:
+
+(1) calculator[query]: Evaluate a simple math expression and return the result. Example: calculator["2+2*3"]
+
+(2) query_llm_agenda(query, is_local=True, start=None, end=None): Query the agenda retriever using embedding similarity search. Example: query_llm_agenda([0], "March 7th, 2022")
+
+(3) query_llm_scirex(query, is_local=True, start=None, end=None): Query the scirex retriever using embedding similarity search. Example: query_llm_scirex([0], "machine learning")
+
+(4) db_loader(target_db): Load a table database and return column info. Example: db_loader("flights")
+
+(5) data_filter(argument): Filter data in a loaded table database. Example: data_filter("IATA_Code_Marketing_Airline=AA, Flight_Number_Marketing_Airline=5647")
+
+(6) get_value(argument): Get a column value from the filtered data. Example: get_value("DepTime")
+
+(7) load_graph(graph_name): Load a graph by name (e.g., 'dblp'). Example: load_graph("dblp")
+
+(8) check_neighbours(argument): Check neighbors for a node in a graph. Example: check_neighbours("PaperNet, HRFormer: High-Resolution Vision Transformer for Dense Predict.")
+
+(9) check_nodes(argument): Check node attributes. Example: check_nodes("PaperNet, Learning the Principle of Least Action with Reinforcement Learning.")
+
+(10) check_edges(argument): Check edge attributes. Example: check_edges("AuthorNet, Chao Zhang, Weihong Lin")
+
+(11) execute_sql_query(db_path, sql_cmd): Executes a SQL command on the specified SQLite database and returns the results as a formatted string. Example: execute_sql_query("./external_sql_lite/yelp.sqlite", "SELECT latitude, longitude FROM yelp_data WHERE address='6830 Rising Sun Ave'")
+
+(12) execute_python_code(python_code): Executes Python code. Example: execute_python_code("ans = 2 + 2")
+
+(13) Finish[answer]: Returns the answer and finishes the task.
+
 You may take as many steps as necessary.
 Here are some examples:
 {examples}
@@ -128,7 +142,7 @@ Here are some examples:
 
 {reflections}
 
-Question: {question}{scratchpad}"""
+"""
 
 REFLECTION_HEADER = 'You have attempted to answer following question before and failed. The following reflection(s) give a plan to avoid failing to answer the question in the same way you did previously. Use them to improve your strategy of correctly answering the given question.\n'
 REFLECTION_AFTER_LAST_TRIAL_HEADER = 'The following reflection(s) give a plan to avoid failing to answer the question in the same way you did previously. Use them to improve your strategy of correctly answering the given question.\n'
